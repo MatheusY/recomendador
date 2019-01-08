@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<title>Menu</title>
+	<h:outputStylesheet library="css" name="estilo.css" />
+</h:head>
+<h:body>
+	<h:form styleClass="background-color">
+		<div class="content" style="width: 100%; height: 100%">
+			<p:dataGrid var="restaurante"
+				value="#{restauranteController.restaurantes}" columns="4"
+				layout="grid" rows="12" paginator="true" id="dataGrid" paginatorPosition="bottom"
+				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+				emptyMessage="Nenhum registro encontrado">
+
+				<p:panel header="#{restaurante.nome}" style="text-align:center">
+					<h:panelGrid columns="1" style="width:100%; background-color: none;" >
+						<p:commandLink title="Detalhe" id="linkDetalhe"
+							action="#{restauranteController.detalhe}">
+							<h:graphicImage url="#{restaurante.imagem}" width="100"
+								height="100" />
+							<f:setPropertyActionListener value="#{restaurante}"
+								target="#{restauranteController.restauranteSelecao}" />
+							<f:param name="context" value="restaurant" />
+						</p:commandLink>
+					</h:panelGrid>
+
+				</p:panel>
+
+			</p:dataGrid>
+
+		</div>
+	</h:form>
+</h:body>
+</html>

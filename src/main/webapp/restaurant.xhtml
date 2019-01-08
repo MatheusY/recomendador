@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<title>Avaliação</title>
+	<h:outputStylesheet library="css" name="estilo.css" />
+</h:head>
+
+<h:body>
+	<h:form styleClass="background-color" id="formRestaurante"
+		prepenId="false">
+		<div class="center panelgrid">
+			<p:panelGrid columns="1" layout="grid"
+				styleClass="ui-panelgrid-blank">
+				<p:column>
+					<p:outputLabel
+						value="#{restauranteController.restauranteSelecao.nome}"
+						styleClass="titulo" />
+				</p:column>
+				<p:column>
+					<h:graphicImage
+						url="#{restauranteController.restauranteSelecao.imagem}"
+						width="300" height="300" styleClass="imagem-restaurante" />
+				</p:column>
+				<p:column>
+					<p:outputPanel style="background-color: black;">
+						<p:rating value="#{restauranteController.avaliacao.nota}"
+							cancel="false" styleClass="rating" />
+					</p:outputPanel>
+				</p:column>
+				<p:column>
+					<p:commandButton value="Confirmar"
+						action="#{restauranteController.salvarAvaliacao}">
+						<f:param name="context" value="menu" />
+					</p:commandButton>
+				</p:column>
+			</p:panelGrid>
+		</div>
+
+	</h:form>
+
+</h:body>
+
+
+
+</html>
