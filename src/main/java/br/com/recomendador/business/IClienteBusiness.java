@@ -6,5 +6,7 @@ public interface IClienteBusiness {
 
 	public Cliente buscar(long id);
 	
+	public Cliente cadastrar(Cliente cliente);
+	
 
 }

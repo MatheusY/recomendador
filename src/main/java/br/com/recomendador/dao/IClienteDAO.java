@@ -6,4 +6,6 @@ public interface IClienteDAO {
 
 	public Cliente searchById(long id);
 
+	public Cliente insert(Cliente cliente);
+
 }

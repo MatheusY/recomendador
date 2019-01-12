@@ -38,4 +38,16 @@ public class ClienteDAO implements IClienteDAO {
 		return typedQuery.getSingleResult();
 	}
 
+	
+	@Override
+	public Cliente insert(Cliente cliente) {
+		try {
+		entityManager.persist(cliente);
+		entityManager.flush();
+		}catch (Exception e) {
+			// TODO: handle exception
+		}
+		return cliente;
+	}
+
 }

@@ -37,13 +37,15 @@ public class RestauranteController extends AbstractController {
 	private static final String RESTAURANTE_KEY = "restauranteSelecao";
 
 	private static final String AVALIACAO_KEY = "avaliacao";
+	
+	private static final String CLIENTE_KEY = "clienteSelecao";
 
 	private Restaurante restauranteSelecao;
 
 	private Cliente clienteSelecao;
 
 	private Avaliacao avaliacao;
-	
+
 	private int paginaAtual = 1;
 
 	List<Restaurante> restaurantes = new ArrayList<>();
@@ -53,9 +55,14 @@ public class RestauranteController extends AbstractController {
 		this.restaurantes = restauranteBusiness.buscarTodos();
 		this.restauranteSelecao = (Restaurante) this.getSessionAttribute(RESTAURANTE_KEY);
 		this.avaliacao = (Avaliacao) this.getSessionAttribute(AVALIACAO_KEY);
-		if(avaliacao == null) 
+		this.clienteSelecao = (Cliente) this.getSessionAttribute(CLIENTE_KEY);
+		if (avaliacao == null)
 			avaliacao = new Avaliacao();
-		this.setClienteSelecao(clienteBusiness.buscar(1L));
+		if (clienteSelecao == null) {
+			clienteSelecao = new Cliente();
+			clienteSelecao.setNome("Matheus");
+			clienteSelecao = clienteBusiness.cadastrar(clienteSelecao);
+		}
 
 	}
 
@@ -63,12 +70,13 @@ public class RestauranteController extends AbstractController {
 		this.setSessionAttribute(RESTAURANTE_KEY, this.restauranteSelecao);
 		avaliacao = avaliacaoBusiness.buscarPorRestauranteECliente(restauranteSelecao, clienteSelecao);
 		this.setSessionAttribute(AVALIACAO_KEY, this.avaliacao);
+		this.setSessionAttribute(CLIENTE_KEY, this.clienteSelecao);
 		this.renderizarTela();
 	}
 
 	public void salvarAvaliacao() {
 		if (avaliacao.getId() == null) {
-			avaliacao.setCliente(clienteBusiness.buscar(1L));
+			avaliacao.setCliente(clienteSelecao);
 			avaliacao.setRestaurante(restauranteSelecao);
 			avaliacaoBusiness.salvar(avaliacao);
 		} else {

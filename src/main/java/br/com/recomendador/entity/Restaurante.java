@@ -8,8 +8,10 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
@@ -21,7 +23,8 @@ public class Restaurante implements Serializable {
 	private static final long serialVersionUID = -4863953864167272898L;
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="restaurante_sequence")
+	@SequenceGenerator(name="restaurante_sequence", sequenceName="res_seq")
 	@Column(name="ID_RESTAURANTE")
 	private Long id;
 	
