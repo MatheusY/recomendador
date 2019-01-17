@@ -5,9 +5,11 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
@@ -20,12 +22,13 @@ public class Avaliacao implements Serializable {
 	private static final long serialVersionUID = -3869475147238087584L;
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="avaliaca_sequence")
+	@SequenceGenerator(name="avaliaca_sequence", sequenceName="ava_seq", allocationSize = 1)
 	@Column(name="ID_AVALIACAO")
 	private Long id;
 	
 	@Column(name="NOTA")
-	private int nota;
+	private Integer nota;
 	
 	@ManyToOne
 	@JoinColumn(name="ID_CLIENTE")
@@ -43,11 +46,11 @@ public class Avaliacao implements Serializable {
 		this.id = id;
 	}
 
-	public int getNota() {
+	public Integer getNota() {
 		return nota;
 	}
 
-	public void setNota(int nota) {
+	public void setNota(Integer nota) {
 		this.nota = nota;
 	}
 

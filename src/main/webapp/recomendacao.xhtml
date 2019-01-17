@@ -6,25 +6,21 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:p="http://primefaces.org/ui">
 <h:head>
-	<title>Menu</title>
+	<title>recomendacao</title>
 	<h:outputStylesheet library="css" name="estilo.css" />
 </h:head>
 <h:body>
 	<h:form styleClass="background-color">
 		<div class="content" style="width: 100%; height: 100%">
-
 			<p:dataGrid var="restaurante"
-				value="#{restauranteController.restaurantes}" columns="4"
-				layout="grid" rows="12" paginator="true" id="dataGrid"
-				paginatorPosition="bottom"
-				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+				value="#{restauranteController.restaurantesRecomendados}" columns="3"
+				layout="grid" rows="3" paginator="false" id="dataGrid"
 				emptyMessage="Nenhum registro encontrado">
 
 				<p:panel header="#{restaurante.nome}" style="text-align:center">
-					<h:panelGrid columns="1"
-						style="width:100%; background-color: none;">
+					<h:panelGrid columns="1" style="width:100%; background-color: none;" >
 						<p:commandLink title="Detalhe" id="linkDetalhe"
-							action="#{restauranteController.detalhe}" update="@form">
+							action="#{restauranteController.detalheDialog}" update="@form" >
 							<h:graphicImage url="#{restaurante.imagem}" width="150"
 								height="100" />
 							<f:setPropertyActionListener value="#{restaurante}"
@@ -36,10 +32,6 @@
 				</p:panel>
 
 			</p:dataGrid>
-
-			<p:commandButton value="Recomendar" styleClass="recommend-button"
-				actionListener="#{restauranteController.recomendar}" update="@form">
-			</p:commandButton>
 
 		</div>
 	</h:form>

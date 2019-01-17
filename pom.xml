@@ -79,6 +79,26 @@
 			<version>1.3.2</version>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/org.apache.hadoop/hadoop-client -->
+		<dependency>
+			<groupId>org.apache.hadoop</groupId>
+			<artifactId>hadoop-client</artifactId>
+			<version>3.1.1</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.apache.mahout/mahout-mr -->
+		<dependency>
+			<groupId>org.apache.mahout</groupId>
+			<artifactId>mahout-mr</artifactId>
+			<version>0.13.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.opencsv</groupId>
+			<artifactId>opencsv</artifactId>
+			<version>4.1</version>
+		</dependency>
 
 	</dependencies>
 	<build>

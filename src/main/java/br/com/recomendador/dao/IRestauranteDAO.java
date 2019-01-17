@@ -8,4 +8,6 @@ public interface IRestauranteDAO {
 
 	public List<Restaurante> findAll();
 
+	public Restaurante findById(Long id);
+
 }

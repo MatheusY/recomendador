@@ -8,4 +8,9 @@ public interface IRestauranteBusiness {
 	
 	public List<Restaurante> buscarTodos();
 
+	public Restaurante buscarPorId(Long id);
+
+	public void closeDialog();
+
+
 }

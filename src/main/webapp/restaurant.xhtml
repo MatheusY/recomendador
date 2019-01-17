@@ -25,7 +25,10 @@
 				<p:column>
 					<h:graphicImage
 						url="#{restauranteController.restauranteSelecao.imagem}"
-						width="300" height="300" styleClass="imagem-restaurante" />
+						width="450" height="300" styleClass="imagem-restaurante" />
+				</p:column>
+				<p:column>
+					<h:outputLabel value="#{restauranteController.restauranteSelecao.endereco}"/>
 				</p:column>
 				<p:column>
 					<p:outputPanel style="background-color: black;">
@@ -34,14 +37,23 @@
 					</p:outputPanel>
 				</p:column>
 				<p:column>
-					<p:commandButton value="Confirmar"
-						action="#{restauranteController.salvarAvaliacao}">
-						<f:param name="context" value="menu" />
-					</p:commandButton>
+					<p:outputPanel styleClass="panel-button">
+						<p:commandButton value="Cancelar" styleClass="recommend-button"
+							action="#{restauranteController.renderizarTela}" update="@form">
+							<f:param name="context" value="menu" />
+						</p:commandButton>
+					</p:outputPanel>
+					
+					<p:outputPanel styleClass="panel-button">
+						<p:commandButton value="Confirmar" styleClass="confirm-button"
+							action="#{restauranteController.salvarAvaliacao}" update="@form">
+							<f:param name="context" value="menu" />
+						</p:commandButton>
+					</p:outputPanel>
 				</p:column>
 			</p:panelGrid>
 		</div>
-
+		<p:growl id="growl" showDetail="true" sticky="false" />
 	</h:form>
 
 </h:body>

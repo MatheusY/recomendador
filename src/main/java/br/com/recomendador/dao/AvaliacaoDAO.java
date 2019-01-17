@@ -1,5 +1,7 @@
 package br.com.recomendador.dao;
 
+import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -59,6 +61,15 @@ public class AvaliacaoDAO implements IAvaliacaoDAO {
 		avaliacao = entityManager.merge(avaliacao);
 		entityManager.flush();
 		return avaliacao;
+	}
+
+	@Override
+	public List<Avaliacao> searchAll() {
+		CriteriaQuery<Avaliacao> criteriaQuery = getBuilder().createQuery(Avaliacao.class);
+		Root<Avaliacao> root = criteriaQuery.from(Avaliacao.class);
+		criteriaQuery.select(root);
+		TypedQuery<Avaliacao> typedQuery = entityManager.createQuery(criteriaQuery);
+		return typedQuery.getResultList();
 	}
 
 }

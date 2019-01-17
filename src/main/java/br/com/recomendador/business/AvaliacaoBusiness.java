@@ -1,5 +1,7 @@
 package br.com.recomendador.business;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -27,6 +29,11 @@ public class AvaliacaoBusiness implements IAvaliacaoBusiness {
 	@Override
 	public Avaliacao editar(Avaliacao avaliacao) {
 		return avaliacaoDAO.update(avaliacao);
+	}
+
+	@Override
+	public List<Avaliacao> buscarTodos() {
+		return avaliacaoDAO.searchAll();
 	}
 
 

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Map;
 
+import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
@@ -35,6 +36,11 @@ public abstract  class AbstractController implements Serializable{
 		this.getHttpSession(true).setAttribute(attributeName, attributeValue);
 	}
 	
+	protected void limparSessionAttribute(final String attributeName) {
+		this.getHttpSession(true).removeAttribute(attributeName);
+		
+	}
+	
 	public void renderizarTela() {
 		String contextParameter = getParameterFromExternalContext("context") + ".xhtml";
 		
@@ -63,5 +69,12 @@ public abstract  class AbstractController implements Serializable{
 
 	private ExternalContext getExternalContext() {
 		return getFacesContext().getExternalContext();
+	}
+	
+	protected void mensagemErro(String mensagem) {
+		FacesContext context = FacesContext.getCurrentInstance();
+		
+		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro!", mensagem));
+		
 	}
 }

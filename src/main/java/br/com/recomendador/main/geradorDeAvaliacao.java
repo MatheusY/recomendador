@@ -24,7 +24,7 @@ public class geradorDeAvaliacao {
 						repetido = true;
 					}
 				}
-				if(!repetido) {
+				if (!repetido) {
 					clientes.add(cliente);
 					restaurantes.add(restaurante);
 					notas.add(nota);
@@ -38,8 +38,9 @@ public class geradorDeAvaliacao {
 		}
 
 		for (int i = 0; i < clientes.size(); i++) {
-			System.out.println("INSERT INTO TB_AVALIACAO(id_avaliacao, nota, id_cliente, id_restaurante) VALUES ("
-					+ (i + 1) + ", " + notas.get(i) + ", " + clientes.get(i) + ", " + restaurantes.get(i) + ");");
+			System.out.println(
+					"INSERT INTO TB_AVALIACAO(id_avaliacao, nota, id_cliente, id_restaurante) VALUES (nextval('ava_seq'), "
+							+ notas.get(i) + ", " + clientes.get(i) + ", " + restaurantes.get(i) + ");");
 		}
 
 	}
