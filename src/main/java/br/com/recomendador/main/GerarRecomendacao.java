@@ -29,14 +29,9 @@ public class GerarRecomendacao {
 
 	private static final String NEW_LINE_SEPARATOR = "\n";
 
-	@Inject
-	private IAvaliacaoBusiness avaliacaoBusiness;
-
-	private List<Avaliacao> avaliacoes = new ArrayList<>();
-
 	public void GeraAvaliacaoCSV(List<Avaliacao> avaliacoes) throws SystemException {
 		try {
-			File file = new File("/home/matheus/Avaliacao.csv");
+			File file = new File("Avaliacao.csv");
 			FileWriter fileWriter = new FileWriter(file);
 
 			for (Avaliacao avaliacao : avaliacoes) {
@@ -57,21 +52,8 @@ public class GerarRecomendacao {
 
 	}
 
-	public void criarCSV() throws IOException {
-		FileWriter pw = new FileWriter("/home/matheus/Avaliacao.csv");
-		CSVWriter writer = new CSVWriter(pw);
-		String[] data = { "id", "name" };
-		writer.writeNext(data);
-		Integer id = 2;
-		Long l = 5L;
-		String[] data1 = { id.toString(), l.toString() };
-		writer.writeNext(data1);
-		writer.close();
-		System.out.println("done!");
-	}
-
 	public List<Long> geraRecomendacao(Long idCliente) throws IOException, TasteException {
-		File file = new File("/home/matheus/Avaliacao.csv");
+		File file = new File("Avaliacao.csv");
 		FileDataModel model = new FileDataModel(file);
 
 		UserSimilarity similarity = new PearsonCorrelationSimilarity(model);

@@ -48,6 +48,7 @@
 }
 
 .panel-button {
+	margin: 10px;
 	text-align: center;
 }
 
@@ -61,4 +62,28 @@
 
 .recommend-button {
 	margin: 10px;
+	width: 50%;
+	background-color: #33CCFF;
+}
+
+.center {
+	margin-top: 20%;
+	width: 50%;
+}
+
+.nome-panel{
+	    border-color: darkcyan;
+    border-width: initial;
+    margin-left: 32%;
+    padding: .2em;
+    background: none !important;
+    width: 40%;
+}
+
+.input-nome{
+	width: 100%;
+}
+
+.enter-button{
+	width: 250px;
 }

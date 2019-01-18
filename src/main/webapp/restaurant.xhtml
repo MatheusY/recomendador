@@ -38,13 +38,11 @@
 				</p:column>
 				<p:column>
 					<p:outputPanel styleClass="panel-button">
-						<p:commandButton value="Cancelar" styleClass="recommend-button"
-							action="#{restauranteController.renderizarTela}" update="@form">
+						<p:commandButton value="Cancelar" styleClass="cancel-button"
+							action="#{restauranteController.cancelar}" update="@form">
 							<f:param name="context" value="menu" />
 						</p:commandButton>
-					</p:outputPanel>
 					
-					<p:outputPanel styleClass="panel-button">
 						<p:commandButton value="Confirmar" styleClass="confirm-button"
 							action="#{restauranteController.salvarAvaliacao}" update="@form">
 							<f:param name="context" value="menu" />

@@ -12,11 +12,12 @@
 <h:body>
 	<h:form styleClass="background-color">
 		<div class="content" style="width: 100%; height: 100%">
-
+			<p:growl id="growl" showDetail="true" sticky="false" />
 			<p:dataGrid var="restaurante"
 				value="#{restauranteController.restaurantes}" columns="4"
 				layout="grid" rows="12" paginator="true" id="dataGrid"
 				paginatorPosition="bottom"
+				currentPageReportTemplate="({currentPage} de {totalPages})"
 				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
 				emptyMessage="Nenhum registro encontrado">
 
@@ -36,11 +37,11 @@
 				</p:panel>
 
 			</p:dataGrid>
-
-			<p:commandButton value="Recomendar" styleClass="recommend-button"
-				actionListener="#{restauranteController.recomendar}" update="@form">
-			</p:commandButton>
-
+			<p:outputPanel styleClass="panel-button">
+				<p:commandButton value="Recomendar" styleClass="recommend-button"
+					actionListener="#{restauranteController.recomendar}" update="@form">
+				</p:commandButton>
+			</p:outputPanel>
 		</div>
 	</h:form>
 </h:body>

@@ -72,4 +72,14 @@ public class AvaliacaoDAO implements IAvaliacaoDAO {
 		return typedQuery.getResultList();
 	}
 
+	@Override
+	public List<Avaliacao> searchByCliente(Cliente cliente) {
+		CriteriaQuery<Avaliacao> criteriaQuery = getBuilder().createQuery(Avaliacao.class);
+		Root<Avaliacao> root = criteriaQuery.from(Avaliacao.class);
+		Predicate predicate = getBuilder().equal(root.get(Avaliacao_.cliente), cliente);
+		criteriaQuery.where(predicate);
+		TypedQuery<Avaliacao> typedQuery = entityManager.createQuery(criteriaQuery);
+		return typedQuery.getResultList();
+	}
+
 }

@@ -15,5 +15,7 @@ public interface IAvaliacaoBusiness {
 	public Avaliacao editar(Avaliacao avaliacao);
 
 	public List<Avaliacao> buscarTodos();
+
+	public List<Avaliacao> buscarPorCliente(Cliente cliente);
 	
 }

@@ -84,24 +84,15 @@ public class RestauranteController extends AbstractController {
 
 		if (avaliacao == null)
 			avaliacao = new Avaliacao();
-
-		if (clienteSelecao == null) {
-			clienteSelecao = new Cliente();
-			clienteSelecao.setNome("Matheus");
-			clienteSelecao = clienteBusiness.cadastrar(clienteSelecao);
-		}
-		
+				
 		this.limparSessionAttribute(RECOMENDA_KEY);
-		this.limparSessionAttribute(RESTAURANTE_KEY);
-		this.limparSessionAttribute(AVALIACAO_KEY);
-
+		
 	}
 
 	public void detalhe() {
 		this.setSessionAttribute(RESTAURANTE_KEY, this.restauranteSelecao);
 		avaliacao = avaliacaoBusiness.buscarPorRestauranteECliente(restauranteSelecao, clienteSelecao);
 		this.setSessionAttribute(AVALIACAO_KEY, this.avaliacao);
-		this.setSessionAttribute(CLIENTE_KEY, this.clienteSelecao);
 		this.renderizarTela();
 	}
 
@@ -119,6 +110,8 @@ public class RestauranteController extends AbstractController {
 			} else {
 				avaliacaoBusiness.editar(avaliacao);
 			}
+			this.limparSessionAttribute(RESTAURANTE_KEY);
+			this.limparSessionAttribute(AVALIACAO_KEY);
 			this.renderizarTela();
 		}else {
 			this.mensagemErro("Insira a nota!");
@@ -128,8 +121,13 @@ public class RestauranteController extends AbstractController {
 
 
 	public void recomendar(ActionEvent ae) {
+		List<Avaliacao> avaliacoes = this.avaliacaoBusiness.buscarPorCliente(this.clienteSelecao); 
+		if(avaliacoes.size() > 1) {
 		this.setSessionAttribute(RECOMENDA_KEY, Boolean.TRUE);
 		RequestContext.getCurrentInstance().openDialog("recomendacao", getDialogOptions(), null);
+		}else {
+			this.mensagemErro("Para a recomendação ser feita é necessário ter mais de uma avaliação!");
+		}
 	}
 
 	private void procurarRecomendacao() {
@@ -146,6 +144,12 @@ public class RestauranteController extends AbstractController {
 			System.out.println(e.getMessage());
 			e.printStackTrace();
 		}
+	}
+	
+	public void cancelar() {
+		this.limparSessionAttribute(AVALIACAO_KEY);
+		this.limparSessionAttribute(RESTAURANTE_KEY);
+		this.renderizarTela();
 	}
 
 	public Restaurante procurarRestaurante(Long id) {

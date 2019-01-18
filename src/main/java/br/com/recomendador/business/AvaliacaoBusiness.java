@@ -36,5 +36,10 @@ public class AvaliacaoBusiness implements IAvaliacaoBusiness {
 		return avaliacaoDAO.searchAll();
 	}
 
+	@Override
+	public List<Avaliacao> buscarPorCliente(Cliente cliente) {
+		return avaliacaoDAO.searchByCliente(cliente);
+	}
+
 
 }
