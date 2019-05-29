@@ -1,31 +1,32 @@
-<?xml version="1.0" encoding="UTF-8"?>
- 
-<web-app>
-     <display-name>Simple JSF2 Application with Primefaces</display-name>
- 
-     <!--
-         Current project stage. When it is set to 'Development' Primefaces give a lot of debug information on the screen.
-      -->
-   <context-param>
-       <param-name>javax.faces.PROJECT_STAGE</param-name>
-       <param-value>Development</param-value>
-   </context-param>
- 
-   <welcome-file-list>
-       <welcome-file>index.xhtml</welcome-file>
-   </welcome-file-list>
- 
-   <!-- Staring JSF -->
-   <servlet>
-       <servlet-name>Faces Servlet</servlet-name>
-       <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
-       <load-on-startup>1</load-on-startup>
-   </servlet>
- 
-   <!-- JSF URL mapping -->
-   <servlet-mapping>
-       <servlet-name>Faces Servlet</servlet-name>
-       <url-pattern>*.xhtml</url-pattern>
-   </servlet-mapping>
- 
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee 
+    http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+	version="3.1">
+	<display-name>Simple JSF2 Application with Primefaces</display-name>
+
+	<!-- Current project stage. When it is set to 'Development' Primefaces give 
+		a lot of debug information on the screen. -->
+	<context-param>
+		<param-name>javax.faces.PROJECT_STAGE</param-name>
+		<param-value>Development</param-value>
+	</context-param>
+
+	<welcome-file-list>
+		<welcome-file>index.xhtml</welcome-file>
+	</welcome-file-list>
+
+	<!-- Staring JSF -->
+	<servlet>
+		<servlet-name>Faces Servlet</servlet-name>
+		<servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<!-- JSF URL mapping -->
+	<servlet-mapping>
+		<servlet-name>Faces Servlet</servlet-name>
+		<url-pattern>*.xhtml</url-pattern>
+	</servlet-mapping>
+
 </web-app>

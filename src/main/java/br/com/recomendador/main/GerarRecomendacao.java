@@ -6,8 +6,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-
 import org.apache.mahout.cf.taste.common.TasteException;
 import org.apache.mahout.cf.taste.impl.model.file.FileDataModel;
 import org.apache.mahout.cf.taste.impl.neighborhood.ThresholdUserNeighborhood;
@@ -17,9 +15,6 @@ import org.apache.mahout.cf.taste.recommender.RecommendedItem;
 import org.apache.mahout.cf.taste.recommender.UserBasedRecommender;
 import org.apache.mahout.cf.taste.similarity.UserSimilarity;
 
-import com.opencsv.CSVWriter;
-
-import br.com.recomendador.business.IAvaliacaoBusiness;
 import br.com.recomendador.entity.Avaliacao;
 import br.com.recomendador.exception.SystemException;
 
@@ -33,7 +28,7 @@ public class GerarRecomendacao {
 		try {
 			File file = new File("Avaliacao.csv");
 			FileWriter fileWriter = new FileWriter(file);
-
+			
 			for (Avaliacao avaliacao : avaliacoes) {
 				fileWriter.append(String.valueOf(avaliacao.getCliente().getId()));
 				fileWriter.append(COMMA_DELIMITER);

@@ -33,4 +33,16 @@ public class RestauranteBusiness implements IRestauranteBusiness {
 		
 	}
 
+	@Override
+	public List<Restaurante> buscarPorNomeOuTipo(String filtroNome, String filtroTipo) {
+		if(filtroNome != null)
+			filtroNome = filtroNome.toLowerCase();
+		return restauranteDAO.findByNameOrType(filtroNome, filtroTipo);
+	}
+
+	@Override
+	public List<String> buscarTipo() {
+		return restauranteDAO.findTipo();
+	}
+
 }

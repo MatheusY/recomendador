@@ -14,7 +14,7 @@
 <h:body>
 	<h:form styleClass="background-color" id="formRestaurante"
 		prepenId="false">
-		<div class="center panelgrid">
+		<div class="center-div panelgrid">
 			<p:panelGrid columns="1" layout="grid"
 				styleClass="ui-panelgrid-blank">
 				<p:column>
@@ -28,12 +28,13 @@
 						width="450" height="300" styleClass="imagem-restaurante" />
 				</p:column>
 				<p:column>
-					<h:outputLabel value="#{restauranteController.restauranteSelecao.endereco}"/>
+					<h:outputLabel
+						value="#{restauranteController.restauranteSelecao.endereco}" />
 				</p:column>
 				<p:column>
-					<p:outputPanel style="background-color: black;">
-						<p:rating value="#{restauranteController.avaliacao.nota}"
-							cancel="false" styleClass="rating" />
+					<p:outputPanel>
+						 <p:rating value="#{restauranteController.avaliacao.nota}"
+							cancel="false" styleClass="rating" /> 
 					</p:outputPanel>
 				</p:column>
 				<p:column>
@@ -42,7 +43,7 @@
 							action="#{restauranteController.cancelar}" update="@form">
 							<f:param name="context" value="menu" />
 						</p:commandButton>
-					
+
 						<p:commandButton value="Confirmar" styleClass="confirm-button"
 							action="#{restauranteController.salvarAvaliacao}" update="@form">
 							<f:param name="context" value="menu" />

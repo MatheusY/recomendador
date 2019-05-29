@@ -12,5 +12,9 @@ public interface IRestauranteBusiness {
 
 	public void closeDialog();
 
+	public List<Restaurante> buscarPorNomeOuTipo(String filtroNome, String filtroTipo);
+
+	public List<String> buscarTipo();
+
 
 }

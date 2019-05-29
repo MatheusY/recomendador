@@ -10,4 +10,8 @@ public interface IRestauranteDAO {
 
 	public Restaurante findById(Long id);
 
+	public List<Restaurante> findByNameOrType(String filtroNome, String filtroTipo);
+
+	public List<String> findTipo();
+
 }

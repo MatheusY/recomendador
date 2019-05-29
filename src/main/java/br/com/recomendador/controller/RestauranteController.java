@@ -1,6 +1,5 @@
 package br.com.recomendador.controller;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,7 +11,6 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.mahout.cf.taste.common.TasteException;
 import org.primefaces.context.RequestContext;
 
 import br.com.recomendador.business.IAvaliacaoBusiness;
@@ -21,7 +19,6 @@ import br.com.recomendador.business.IRestauranteBusiness;
 import br.com.recomendador.entity.Avaliacao;
 import br.com.recomendador.entity.Cliente;
 import br.com.recomendador.entity.Restaurante;
-import br.com.recomendador.exception.SystemException;
 import br.com.recomendador.main.GerarRecomendacao;
 
 @Named
@@ -60,12 +57,19 @@ public class RestauranteController extends AbstractController {
 	private GerarRecomendacao geraRecomendacao;
 
 	private int paginaAtual = 1;
+	
+	private String filtroNome;
 
 	List<Restaurante> restaurantes = new ArrayList<>();
 
 	List<Restaurante> restaurantesRecomendados = new ArrayList<>();
 
 	private Boolean recomenda = false;
+	
+	private String tipo;
+	
+	private List<String> tipos;
+	
 
 	@PostConstruct
 	public void init() {
@@ -171,6 +175,10 @@ public class RestauranteController extends AbstractController {
 	private void fecharDialog() {
 		restauranteBusiness.closeDialog();
 	}
+	
+	public void filtrarLista() {
+		this.setRestaurantes(restauranteBusiness.buscarPorNomeOuTipo(this.getFiltroNome(), this.getTipo()));
+	}
 
 	public List<Restaurante> getRestaurantes() {
 		return restaurantes;
@@ -218,6 +226,30 @@ public class RestauranteController extends AbstractController {
 
 	public void setRestaurantesRecomendados(List<Restaurante> restaurantesRecomendados) {
 		this.restaurantesRecomendados = restaurantesRecomendados;
+	}
+
+	public String getFiltroNome() {
+		return filtroNome;
+	}
+
+	public void setFiltroNome(String filtroNome) {
+		this.filtroNome = filtroNome;
+	}
+
+	public List<String> getTipos() {
+		return restauranteBusiness.buscarTipo();
+	}
+
+	public void setTipos(List<String> tipos) {
+		this.tipos = tipos;
+	}
+
+	public String getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(String tipo) {
+		this.tipo = tipo;
 	}
 
 }

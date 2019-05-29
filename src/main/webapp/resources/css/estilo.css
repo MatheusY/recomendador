@@ -12,19 +12,32 @@
     right: 0;
 }
 
+.ui-grid{
+	background: none !important;
+}
+
 .content {
 	position: relative;
     z-index: 1;
 }
 
 .ui-rating-star a, .ui-rating-cancel a {
-    background: url("/issue/javax.faces.resource/rating/rating.png.jsf?ln=primefaces") no-repeat scroll 0 0 transparent;
-    background-size: 20px;
-    height: 45px;
-    width: 50px;
+    background-image: url(#{resource['img/star.png']}) no-repeat scroll 0 0 transparent;
+   	float: left;
+    display: block;
+    overflow: hidden;
+    text-indent: -999em;
+    cursor: pointer;
+    background-size: 40px;
+    height: 50px;
+    width: 70px;
 }
 
-.center{
+.star {
+ 	background-image: url(#{resource['img/star.png']});
+}
+
+.center-div{
 	text-align: center;
 }
 
@@ -60,10 +73,14 @@
 	margin: 10px;
 }
 
+.panel-filter{
+	margin: 5px;
+}
+
 .recommend-button {
-	margin: 10px;
-	width: 50%;
+	width: 100%;
 	background-color: #33CCFF;
+	float: right;
 }
 
 .center {
@@ -86,4 +103,9 @@
 
 .enter-button{
 	width: 250px;
+}
+
+.type-filter{
+	margin-left: 10px;
+	margin-top: 10px;
 }

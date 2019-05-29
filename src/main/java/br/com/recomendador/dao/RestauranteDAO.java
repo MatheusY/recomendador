@@ -1,5 +1,6 @@
 package br.com.recomendador.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -14,18 +15,18 @@ import javax.persistence.criteria.Root;
 import br.com.recomendador.entity.Restaurante;
 import br.com.recomendador.entity.Restaurante_;
 
-public class RestauranteDAO implements IRestauranteDAO{
-	
+public class RestauranteDAO implements IRestauranteDAO {
+
 	@PersistenceContext
 	protected EntityManager entityManager;
-	
+
 	private CriteriaBuilder builder;
-	
+
 	@PostConstruct
 	private void init() {
 		builder = entityManager.getCriteriaBuilder();
 	}
-	
+
 	public CriteriaBuilder getBuilder() {
 		return this.builder;
 	}
@@ -48,6 +49,43 @@ public class RestauranteDAO implements IRestauranteDAO{
 		criteriaQuery.where(predicate);
 		TypedQuery<Restaurante> typedQuery = entityManager.createQuery(criteriaQuery);
 		return typedQuery.getSingleResult();
+	}
+
+	@Override
+	public List<Restaurante> findByNameOrType(String filtroNome, String filtroTipo) {
+		CriteriaQuery<Restaurante> criteriaQuery = getBuilder().createQuery(Restaurante.class);
+		Root<Restaurante> root = criteriaQuery.from(Restaurante.class);
+		Predicate predicateNome = getBuilder().like(getBuilder().lower(root.get(Restaurante_.nome)),
+				"%" + filtroNome + "%");
+		Predicate predicateTipo = getBuilder().equal(root.get(Restaurante_.tipo), filtroTipo);
+		Predicate predicateAnd = getBuilder().and(predicateNome, predicateTipo);
+		if (filtroTipo == null && filtroNome != null)
+			criteriaQuery.where(predicateNome);
+		else if (filtroNome == null && filtroTipo != null)
+			criteriaQuery.where(predicateTipo);
+		else if (filtroNome == null)
+			criteriaQuery.select(root);
+		else
+			criteriaQuery.where(predicateAnd);
+
+		criteriaQuery.orderBy(getBuilder().asc(root.get(Restaurante_.nome)));
+		TypedQuery<Restaurante> typedQuery = entityManager.createQuery(criteriaQuery);
+		return typedQuery.getResultList();
+	}
+
+	@Override
+	public List<String> findTipo() {
+		CriteriaQuery<Object> criteriaQuery = getBuilder().createQuery(Object.class);
+		Root<Restaurante> root = criteriaQuery.from(Restaurante.class);
+		criteriaQuery.multiselect(root.get(Restaurante_.tipo)).groupBy(root.get(Restaurante_.tipo));
+		// criteriaQuery.select(root);
+		TypedQuery<Object> typedQuery = entityManager.createQuery(criteriaQuery);
+		List<Object> objetos = typedQuery.getResultList();
+		List<String> tipos = new ArrayList<>();
+		for (Object objeto : objetos) {
+			tipos.add(objeto.toString());
+		}
+		return tipos;
 	}
 
 }
