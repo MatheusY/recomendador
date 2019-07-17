@@ -1,5 +1,7 @@
 package br.com.recomendador.controller;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,6 +21,7 @@ import br.com.recomendador.business.IRestauranteBusiness;
 import br.com.recomendador.entity.Avaliacao;
 import br.com.recomendador.entity.Cliente;
 import br.com.recomendador.entity.Restaurante;
+import br.com.recomendador.exception.SystemException;
 import br.com.recomendador.main.GerarRecomendacao;
 
 @Named
@@ -30,6 +33,9 @@ public class RestauranteController extends AbstractController {
 	/**
 	 * 
 	 */
+
+	@Inject
+	private ClienteModel clienteModel;
 
 	@Inject
 	private IRestauranteBusiness restauranteBusiness;
@@ -54,10 +60,10 @@ public class RestauranteController extends AbstractController {
 
 	private Avaliacao avaliacao;
 
-	private GerarRecomendacao geraRecomendacao;
+	private GerarRecomendacao geraRecomendacao = new GerarRecomendacao();
 
 	private int paginaAtual = 1;
-	
+
 	private String filtroNome;
 
 	List<Restaurante> restaurantes = new ArrayList<>();
@@ -65,22 +71,24 @@ public class RestauranteController extends AbstractController {
 	List<Restaurante> restaurantesRecomendados = new ArrayList<>();
 
 	private Boolean recomenda = false;
-	
+
 	private String tipo;
-	
+
 	private List<String> tipos;
-	
+
+	private File file = new File("log.csv");
 
 	@PostConstruct
 	public void init() {
 		this.restauranteSelecao = (Restaurante) this.getSessionAttribute(RESTAURANTE_KEY);
 		this.avaliacao = (Avaliacao) this.getSessionAttribute(AVALIACAO_KEY);
+//		this.clienteSelecao = clienteModel.getCliente();
 		this.clienteSelecao = (Cliente) this.getSessionAttribute(CLIENTE_KEY);
-		
-		if(restauranteSelecao == null)
+
+		if (restauranteSelecao == null)
 			this.restaurantes = restauranteBusiness.buscarTodos();
-		
-		if (this.getSessionAttribute(RECOMENDA_KEY) != null) 
+
+		if (this.getSessionAttribute(RECOMENDA_KEY) != null)
 			recomenda = (Boolean) this.getSessionAttribute(RECOMENDA_KEY);
 
 		if (recomenda)
@@ -88,16 +96,24 @@ public class RestauranteController extends AbstractController {
 
 		if (avaliacao == null)
 			avaliacao = new Avaliacao();
-				
+
 		this.limparSessionAttribute(RECOMENDA_KEY);
-		
+
 	}
 
 	public void detalhe() {
-		this.setSessionAttribute(RESTAURANTE_KEY, this.restauranteSelecao);
-		avaliacao = avaliacaoBusiness.buscarPorRestauranteECliente(restauranteSelecao, clienteSelecao);
-		this.setSessionAttribute(AVALIACAO_KEY, this.avaliacao);
-		this.renderizarTela();
+		try {
+			if (this.getClienteSelecao().getId() == null)
+				this.redirect("");
+			else {
+				this.setSessionAttribute(RESTAURANTE_KEY, this.restauranteSelecao);
+				avaliacao = avaliacaoBusiness.buscarPorRestauranteECliente(restauranteSelecao, clienteSelecao);
+				this.setSessionAttribute(AVALIACAO_KEY, this.avaliacao);
+				this.renderizarTela();
+			}
+		} catch (SystemException e) {
+			this.mensagemErro(e.getMessage());
+		}
 	}
 
 	public void detalheDialog() {
@@ -106,50 +122,121 @@ public class RestauranteController extends AbstractController {
 	}
 
 	public void salvarAvaliacao() {
-		if (this.getAvaliacao().getNota() != null) {
-			if (avaliacao.getId() == null) {
-				avaliacao.setCliente(clienteSelecao);
-				avaliacao.setRestaurante(restauranteSelecao);
-				avaliacaoBusiness.salvar(avaliacao);
+		try {
+			if (this.getAvaliacao().getNota() != null) {
+				if (avaliacao.getId() == null) {
+					avaliacao.setCliente(clienteSelecao);
+					avaliacao.setRestaurante(restauranteSelecao);
+					avaliacaoBusiness.salvar(avaliacao);
+				} else {
+					avaliacaoBusiness.editar(avaliacao);
+				}
+				this.limparSessionAttribute(RESTAURANTE_KEY);
+				this.limparSessionAttribute(AVALIACAO_KEY);
+				this.renderizarTela();
 			} else {
-				avaliacaoBusiness.editar(avaliacao);
+				this.mensagemErro("Insira a nota!");
 			}
-			this.limparSessionAttribute(RESTAURANTE_KEY);
-			this.limparSessionAttribute(AVALIACAO_KEY);
-			this.renderizarTela();
-		}else {
-			this.mensagemErro("Insira a nota!");
+		} catch (Exception e) {
+			this.mensagemErro(e.getMessage());
 		}
 
 	}
 
-
 	public void recomendar(ActionEvent ae) {
-		List<Avaliacao> avaliacoes = this.avaliacaoBusiness.buscarPorCliente(this.clienteSelecao); 
-		if(avaliacoes.size() > 1) {
-		this.setSessionAttribute(RECOMENDA_KEY, Boolean.TRUE);
-		RequestContext.getCurrentInstance().openDialog("recomendacao", getDialogOptions(), null);
-		}else {
+		List<Avaliacao> avaliacoes = this.avaliacaoBusiness.buscarPorCliente(this.clienteSelecao);
+		if (avaliacoes.size() > 1) {
+			this.setSessionAttribute(RECOMENDA_KEY, Boolean.TRUE);
+			RequestContext.getCurrentInstance().openDialog("recomendacao", getDialogOptions(), null);
+		} else {
 			this.mensagemErro("Para a recomendação ser feita é necessário ter mais de uma avaliação!");
 		}
 	}
 
 	private void procurarRecomendacao() {
+		FileWriter writer = null;
 		try {
-			geraRecomendacao = new GerarRecomendacao();
-			List<Avaliacao> avaliacoes = avaliacaoBusiness.buscarTodos();
-			geraRecomendacao.GeraAvaliacaoCSV(avaliacoes);
-			List<Long> listaId = geraRecomendacao.geraRecomendacao(clienteSelecao.getId());
+//			geraRecomendacao = new GerarRecomendacao();
+			// List<Avaliacao> avaliacoes = avaliacaoBusiness.buscarTodos();
+			// geraRecomendacao.geraAvaliacaoCSV(avaliacoes);
+			long start = System.currentTimeMillis();
+			List<Long> listaId = geraRecomendacao.geraRecomendacaoUserPearson(clienteSelecao.getId());
+			long finish = System.currentTimeMillis();
+			long timeElapsed = finish - start;
+			writer = new FileWriter(file, true);
+			writer.append("Pearson Correlation \n");
+			writer.append(timeElapsed + ",");
 			for (Long id : listaId) {
 				Restaurante restaurante = this.procurarRestaurante(id);
 				this.restaurantesRecomendados.add(restaurante);
+				writer.append(id + ",");
 			}
+			writer.append("\n");
+			
+			//Log Like Similarity User
+			start = System.currentTimeMillis();
+			listaId = geraRecomendacao.geraRecomendacaoUserLogLikeSimilarity(clienteSelecao.getId());
+			finish = System.currentTimeMillis();
+			timeElapsed = finish - start;
+			writer.append("Log Like Similarity Usuario \n");
+			writer.append(timeElapsed + ",");
+			for (Long id : listaId) {
+//				Restaurante restaurante = this.procurarRestaurante(id);
+//				this.restaurantesRecomendados.add(restaurante);
+				writer.append(id + ",");
+			}
+			writer.append("\n");
+			
+			//Log Like Similarity Item
+			start = System.currentTimeMillis();
+			listaId = geraRecomendacao.geraRecomendacaoItemLogLikeSimilarity(clienteSelecao.getId());
+			finish = System.currentTimeMillis();
+			timeElapsed = finish - start;
+			writer.append("Log Like Similarity Item \n");
+			writer.append(timeElapsed + ",");
+			for (Long id : listaId) {
+//				Restaurante restaurante = this.procurarRestaurante(id);
+//				this.restaurantesRecomendados.add(restaurante);
+				writer.append(id + ",");
+			}
+			writer.append("\n");
+			
+			//Euclidean Distance usuário
+			start = System.currentTimeMillis();
+			listaId = geraRecomendacao.geraRecomendacaoUserEuclidean(clienteSelecao.getId());
+			finish = System.currentTimeMillis();
+			timeElapsed = finish - start;
+			writer.append("Eclidean distance Usuario \n");
+			writer.append(timeElapsed + ",");
+			for (Long id : listaId) {
+//				Restaurante restaurante = this.procurarRestaurante(id);
+//				this.restaurantesRecomendados.add(restaurante);
+				writer.append(id + ",");
+			}
+			writer.append("\n");
+			
+			//Euclidean Distance item
+			start = System.currentTimeMillis();
+			listaId = geraRecomendacao.geraRecomendacaoItemEuclidean(clienteSelecao.getId());
+			finish = System.currentTimeMillis();
+			timeElapsed = finish - start;
+			writer.append("Eclidean distance Item \n");
+			writer.append(timeElapsed + ",");
+			for (Long id : listaId) {
+//				Restaurante restaurante = this.procurarRestaurante(id);
+//				this.restaurantesRecomendados.add(restaurante);
+				writer.append(id + ",");
+			}
+			writer.append("\n");
+			
+			writer.flush();
+			writer.close();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void cancelar() {
 		this.limparSessionAttribute(AVALIACAO_KEY);
 		this.limparSessionAttribute(RESTAURANTE_KEY);
@@ -175,7 +262,7 @@ public class RestauranteController extends AbstractController {
 	private void fecharDialog() {
 		restauranteBusiness.closeDialog();
 	}
-	
+
 	public void filtrarLista() {
 		this.setRestaurantes(restauranteBusiness.buscarPorNomeOuTipo(this.getFiltroNome(), this.getTipo()));
 	}

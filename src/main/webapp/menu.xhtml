@@ -37,7 +37,8 @@
 				value="#{restauranteController.restaurantes}" columns="4"
 				layout="grid" rows="12" paginator="true" id="dataGrid"
 				paginatorPosition="bottom" 
-				currentPageReportTemplate="({currentPage} de {totalPages})"
+				scrollable="true" scrollHeight="500"
+				currentPageReportTemplate="{currentPage} de {totalPages}"
 				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
 				emptyMessage="Nenhum registro encontrado">
 

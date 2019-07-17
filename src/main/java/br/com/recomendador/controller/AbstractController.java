@@ -51,7 +51,7 @@ public abstract  class AbstractController implements Serializable{
 		}
 	}
 
-	private void redirect(String pagina) throws SystemException {
+	public void redirect(String pagina) throws SystemException {
 		try {
 			getExternalContext().redirect(getExternalContext().getRequestContextPath() + pagina);
 		} catch (IOException e) {
@@ -77,4 +77,6 @@ public abstract  class AbstractController implements Serializable{
 		context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro!", mensagem));
 		
 	}
+	
+
 }

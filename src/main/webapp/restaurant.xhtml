@@ -40,7 +40,7 @@
 				<p:column>
 					<p:outputPanel styleClass="panel-button">
 						<p:commandButton value="Cancelar" styleClass="cancel-button"
-							action="#{restauranteController.cancelar}" update="@form">
+							action="#{restauranteController.cancelar}" update="@form" process="@this">
 							<f:param name="context" value="menu" />
 						</p:commandButton>
 
