@@ -53,10 +53,19 @@ public class ClienteController extends AbstractController {
 	public void salvarCliente() {
 		if ("teste".equals(clienteSelecao.getNome()))
 			this.setClienteSelecao(clienteBusiness.buscar(1271));
-//			clienteModel.setCliente(clienteBusiness.buscar(1271));
+		else if("teste2".equals(clienteSelecao.getNome()))
+			this.setClienteSelecao(clienteBusiness.buscar(1270));
+		else if("teste3".equals(clienteSelecao.getNome()))
+			this.setClienteSelecao(clienteBusiness.buscar(1269));
+		else if("teste4".equals(clienteSelecao.getNome()))
+			this.setClienteSelecao(clienteBusiness.buscar(1268));
+		else if("teste5".equals(clienteSelecao.getNome()))
+			this.setClienteSelecao(clienteBusiness.buscar(1267));
 		else
 			this.setClienteSelecao(clienteBusiness.cadastrar(clienteSelecao));
 		this.setSessionAttribute(CLIENTE_KEY, this.getClienteSelecao());
+//		this.clienteModel.setCliente(cliente);
+//		this.clienteBusiness.setCliente(this.getClienteSelecao());
 		this.renderizarTela();
 	}
 

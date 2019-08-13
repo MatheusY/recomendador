@@ -1,6 +1,5 @@
 package br.com.recomendador.dao;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -75,16 +74,12 @@ public class RestauranteDAO implements IRestauranteDAO {
 
 	@Override
 	public List<String> findTipo() {
-		CriteriaQuery<Object> criteriaQuery = getBuilder().createQuery(Object.class);
+		CriteriaQuery<String> criteriaQuery = getBuilder().createQuery(String.class);
 		Root<Restaurante> root = criteriaQuery.from(Restaurante.class);
 		criteriaQuery.multiselect(root.get(Restaurante_.tipo)).groupBy(root.get(Restaurante_.tipo));
-		// criteriaQuery.select(root);
-		TypedQuery<Object> typedQuery = entityManager.createQuery(criteriaQuery);
-		List<Object> objetos = typedQuery.getResultList();
-		List<String> tipos = new ArrayList<>();
-		for (Object objeto : objetos) {
-			tipos.add(objeto.toString());
-		}
+		criteriaQuery.orderBy(getBuilder().asc(root.get(Restaurante_.tipo)));
+		TypedQuery<String> typedQuery = entityManager.createQuery(criteriaQuery);
+		List<String> tipos = typedQuery.getResultList();
 		return tipos;
 	}
 

@@ -116,8 +116,6 @@ public class GerarRecomendacao {
 		EuclideanDistanceSimilarity similarity = new EuclideanDistanceSimilarity(model);
 		
 
-		ThresholdUserNeighborhood neighborhood = new ThresholdUserNeighborhood(0.1, similarity, model);
-		
 		GenericItemBasedRecommender recommender = new GenericItemBasedRecommender(model, similarity);
 		
 		

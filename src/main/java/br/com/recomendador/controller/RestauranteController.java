@@ -78,15 +78,16 @@ public class RestauranteController extends AbstractController {
 
 	private File file = new File("log.csv");
 
+	private int algoritmo = 1;
+
 	@PostConstruct
 	public void init() {
 		this.restauranteSelecao = (Restaurante) this.getSessionAttribute(RESTAURANTE_KEY);
 		this.avaliacao = (Avaliacao) this.getSessionAttribute(AVALIACAO_KEY);
-//		this.clienteSelecao = clienteModel.getCliente();
+//		this.clienteSelecao = 
 		this.clienteSelecao = (Cliente) this.getSessionAttribute(CLIENTE_KEY);
 
-		if (restauranteSelecao == null)
-			this.restaurantes = restauranteBusiness.buscarTodos();
+		this.restaurantes = restauranteBusiness.buscarTodos();
 
 		if (this.getSessionAttribute(RECOMENDA_KEY) != null)
 			recomenda = (Boolean) this.getSessionAttribute(RECOMENDA_KEY);
@@ -155,80 +156,89 @@ public class RestauranteController extends AbstractController {
 
 	private void procurarRecomendacao() {
 		FileWriter writer = null;
+		long start;
+		long finish;
+		long timeElapsed;
+		List<Long> listaId;
 		try {
-//			geraRecomendacao = new GerarRecomendacao();
-			// List<Avaliacao> avaliacoes = avaliacaoBusiness.buscarTodos();
-			// geraRecomendacao.geraAvaliacaoCSV(avaliacoes);
-			long start = System.currentTimeMillis();
-			List<Long> listaId = geraRecomendacao.geraRecomendacaoUserPearson(clienteSelecao.getId());
-			long finish = System.currentTimeMillis();
-			long timeElapsed = finish - start;
 			writer = new FileWriter(file, true);
-			writer.append("Pearson Correlation \n");
-			writer.append(timeElapsed + ",");
-			for (Long id : listaId) {
-				Restaurante restaurante = this.procurarRestaurante(id);
-				this.restaurantesRecomendados.add(restaurante);
-				writer.append(id + ",");
+			switch (algoritmo) {
+			case 1:
+				start = System.currentTimeMillis();
+				listaId = geraRecomendacao.geraRecomendacaoUserPearson(clienteSelecao.getId());
+				finish = System.currentTimeMillis();
+				timeElapsed = finish - start;
+				writer.append("Pearson Correlation \n");
+				writer.append(timeElapsed + ",");
+				for (Long id : listaId) {
+					Restaurante restaurante = this.procurarRestaurante(id);
+					this.restaurantesRecomendados.add(restaurante);
+					writer.append(id + ",");
+				}
+				writer.append("\n");
+				break;
+			case 2:
+				// Log Like Similarity User
+				start = System.currentTimeMillis();
+				listaId = geraRecomendacao.geraRecomendacaoUserLogLikeSimilarity(clienteSelecao.getId());
+				finish = System.currentTimeMillis();
+				timeElapsed = finish - start;
+				writer.append("Log Like Similarity Usuario \n");
+				writer.append(timeElapsed + ",");
+				for (Long id : listaId) {
+					Restaurante restaurante = this.procurarRestaurante(id);
+					this.restaurantesRecomendados.add(restaurante);
+					writer.append(id + ",");
+				}
+				writer.append("\n");
+				break;
+			case 3:
+				// Log Like Similarity Item
+				start = System.currentTimeMillis();
+				listaId = geraRecomendacao.geraRecomendacaoItemLogLikeSimilarity(clienteSelecao.getId());
+				finish = System.currentTimeMillis();
+				timeElapsed = finish - start;
+				writer.append("Log Like Similarity Item \n");
+				writer.append(timeElapsed + ",");
+				for (Long id : listaId) {
+					Restaurante restaurante = this.procurarRestaurante(id);
+					this.restaurantesRecomendados.add(restaurante);
+					writer.append(id + ",");
+				}
+				writer.append("\n");
+				break;
+			case 4:
+				// Euclidean Distance usuário
+				start = System.currentTimeMillis();
+				listaId = geraRecomendacao.geraRecomendacaoUserEuclidean(clienteSelecao.getId());
+				finish = System.currentTimeMillis();
+				timeElapsed = finish - start;
+				writer.append("Eclidean distance Usuario \n");
+				writer.append(timeElapsed + ",");
+				for (Long id : listaId) {
+					Restaurante restaurante = this.procurarRestaurante(id);
+					this.restaurantesRecomendados.add(restaurante);
+					writer.append(id + ",");
+				}
+				writer.append("\n");
+				break;
+			case 5:
+				// Euclidean Distance item
+				start = System.currentTimeMillis();
+				listaId = geraRecomendacao.geraRecomendacaoItemEuclidean(clienteSelecao.getId());
+				finish = System.currentTimeMillis();
+				timeElapsed = finish - start;
+				writer.append("Eclidean distance Item \n");
+				writer.append(timeElapsed + ",");
+				for (Long id : listaId) {
+					Restaurante restaurante = this.procurarRestaurante(id);
+					this.restaurantesRecomendados.add(restaurante);
+					writer.append(id + ",");
+				}
+				writer.append("\n");
+				break;
 			}
-			writer.append("\n");
-			
-			//Log Like Similarity User
-			start = System.currentTimeMillis();
-			listaId = geraRecomendacao.geraRecomendacaoUserLogLikeSimilarity(clienteSelecao.getId());
-			finish = System.currentTimeMillis();
-			timeElapsed = finish - start;
-			writer.append("Log Like Similarity Usuario \n");
-			writer.append(timeElapsed + ",");
-			for (Long id : listaId) {
-//				Restaurante restaurante = this.procurarRestaurante(id);
-//				this.restaurantesRecomendados.add(restaurante);
-				writer.append(id + ",");
-			}
-			writer.append("\n");
-			
-			//Log Like Similarity Item
-			start = System.currentTimeMillis();
-			listaId = geraRecomendacao.geraRecomendacaoItemLogLikeSimilarity(clienteSelecao.getId());
-			finish = System.currentTimeMillis();
-			timeElapsed = finish - start;
-			writer.append("Log Like Similarity Item \n");
-			writer.append(timeElapsed + ",");
-			for (Long id : listaId) {
-//				Restaurante restaurante = this.procurarRestaurante(id);
-//				this.restaurantesRecomendados.add(restaurante);
-				writer.append(id + ",");
-			}
-			writer.append("\n");
-			
-			//Euclidean Distance usuário
-			start = System.currentTimeMillis();
-			listaId = geraRecomendacao.geraRecomendacaoUserEuclidean(clienteSelecao.getId());
-			finish = System.currentTimeMillis();
-			timeElapsed = finish - start;
-			writer.append("Eclidean distance Usuario \n");
-			writer.append(timeElapsed + ",");
-			for (Long id : listaId) {
-//				Restaurante restaurante = this.procurarRestaurante(id);
-//				this.restaurantesRecomendados.add(restaurante);
-				writer.append(id + ",");
-			}
-			writer.append("\n");
-			
-			//Euclidean Distance item
-			start = System.currentTimeMillis();
-			listaId = geraRecomendacao.geraRecomendacaoItemEuclidean(clienteSelecao.getId());
-			finish = System.currentTimeMillis();
-			timeElapsed = finish - start;
-			writer.append("Eclidean distance Item \n");
-			writer.append(timeElapsed + ",");
-			for (Long id : listaId) {
-//				Restaurante restaurante = this.procurarRestaurante(id);
-//				this.restaurantesRecomendados.add(restaurante);
-				writer.append(id + ",");
-			}
-			writer.append("\n");
-			
+
 			writer.flush();
 			writer.close();
 		} catch (Exception e) {

@@ -8,5 +8,8 @@ public interface IClienteBusiness {
 	
 	public Cliente cadastrar(Cliente cliente);
 	
+	public Cliente getCliente();
+	
+	public void setCliente(Cliente cliente);
 
 }

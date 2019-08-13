@@ -1,16 +1,18 @@
 package br.com.recomendador.business;
 
-import javax.ejb.Stateless;
+import javax.ejb.Stateful;
 import javax.inject.Inject;
 
 import br.com.recomendador.dao.IClienteDAO;
 import br.com.recomendador.entity.Cliente;
 
-@Stateless
+@Stateful
 public class ClienteBusiness implements IClienteBusiness {
 	
 	@Inject
 	private IClienteDAO clienteDAO;
+	
+	private Cliente cliente;
 
 	@Override
 	public Cliente buscar(long id) {
@@ -23,5 +25,16 @@ public class ClienteBusiness implements IClienteBusiness {
 		return clienteDAO.insert(cliente);
 	}
 
+	@Override
+	public Cliente getCliente() {
+		return cliente;
+	}
+
+	@Override
+	public void setCliente(Cliente cliente) {
+		this.cliente = cliente;
+	}
+
+	
 
 }

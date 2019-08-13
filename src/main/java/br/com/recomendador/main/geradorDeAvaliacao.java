@@ -10,10 +10,10 @@ public class geradorDeAvaliacao {
 		List<Integer> restaurantes = new ArrayList<>();
 		List<Integer> notas = new ArrayList<>();
 
-		for (int x = 0; x < 10000; x++) {
+		for (int x = 0; x < 3; x++) {
 			Random rand = new Random();
-			int cliente = rand.nextInt(600) + 1;
-			int restaurante = rand.nextInt(100) + 1;
+			int cliente = 1269;
+			int restaurante = rand.nextInt(200) + 1;
 			int nota = rand.nextInt(5) + 1;
 
 			if (x != 0) {

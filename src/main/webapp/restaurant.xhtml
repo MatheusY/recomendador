@@ -9,12 +9,16 @@
 <h:head>
 	<title>Avaliação</title>
 	<h:outputStylesheet library="css" name="estilo.css" />
+
+	<link rel="stylesheet"
+		href="//code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" />
 </h:head>
 
 <h:body>
 	<h:form styleClass="background-color" id="formRestaurante"
 		prepenId="false">
-		<div class="center-div panelgrid">
+		<ui:include src="submenu.xhtml" />
+		<div class="center-div panelgrid ui-g-10">
 			<p:panelGrid columns="1" layout="grid"
 				styleClass="ui-panelgrid-blank">
 				<p:column>
@@ -33,14 +37,19 @@
 				</p:column>
 				<p:column>
 					<p:outputPanel>
-						 <p:rating value="#{restauranteController.avaliacao.nota}"
-							cancel="false" styleClass="rating" /> 
+						<!-- 												 <p:rating value="#{restauranteController.avaliacao.nota}" -->
+						<!-- 													cancel="false" styleClass="rating" />  -->
+						<x-star-rating value="#{restauranteController.avaliacao.nota}"
+							number="5"></x-star-rating>
+						<h:outputScript name="js/StarRating.js" />
+
 					</p:outputPanel>
 				</p:column>
 				<p:column>
 					<p:outputPanel styleClass="panel-button">
 						<p:commandButton value="Cancelar" styleClass="cancel-button"
-							action="#{restauranteController.cancelar}" update="@form" process="@this">
+							action="#{restauranteController.cancelar}" update="@form"
+							process="@this">
 							<f:param name="context" value="menu" />
 						</p:commandButton>
 

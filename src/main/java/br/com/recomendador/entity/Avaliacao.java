@@ -11,9 +11,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 @Entity
-@Table(name="TB_AVALIACAO")
+@Table(name = "TB_AVALIACAO", uniqueConstraints = {
+		@UniqueConstraint(columnNames = { "ID_CLIENTE", "ID_RESTAURANTE" }) })
 public class Avaliacao implements Serializable {
 
 	/**
@@ -22,20 +24,20 @@ public class Avaliacao implements Serializable {
 	private static final long serialVersionUID = -3869475147238087584L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="avaliaca_sequence")
-	@SequenceGenerator(name="avaliaca_sequence", sequenceName="ava_seq", allocationSize = 1)
-	@Column(name="ID_AVALIACAO")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "avaliaca_sequence")
+	@SequenceGenerator(name = "avaliaca_sequence", sequenceName = "ava_seq", allocationSize = 1)
+	@Column(name = "ID_AVALIACAO")
 	private Long id;
-	
-	@Column(name="NOTA")
+
+	@Column(name = "NOTA")
 	private Integer nota;
-	
+
 	@ManyToOne
-	@JoinColumn(name="ID_CLIENTE")
+	@JoinColumn(name = "ID_CLIENTE")
 	private Cliente cliente;
-	
+
 	@ManyToOne
-	@JoinColumn(name="ID_RESTAURANTE")
+	@JoinColumn(name = "ID_RESTAURANTE")
 	private Restaurante restaurante;
 
 	public Long getId() {
@@ -69,5 +71,5 @@ public class Avaliacao implements Serializable {
 	public void setRestaurante(Restaurante restaurante) {
 		this.restaurante = restaurante;
 	}
-	
+
 }

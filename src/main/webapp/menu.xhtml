@@ -11,33 +11,35 @@
 </h:head>
 <h:body>
 	<h:form styleClass="background-color">
-		<div class="content" style="width: 100%; height: 100%">
+		<ui:include src="submenu.xhtml" />
+		<div class="ui-g-10">
 			<p:growl id="growl" showDetail="true" sticky="false" />
 			<p:outputPanel styleClass="ui-g-4">
-				<p:outputLabel value="Nome do restaurante" />
+				<p:outputLabel value="Nome: " />
 				<p:inputText value="#{restauranteController.filtroNome}">
 					<p:ajax event="keyup" update="dataGrid"
 						listener="#{restauranteController.filtrarLista}" />
 				</p:inputText>
 			</p:outputPanel>
-			<p:outputPanel styleClass="ui-g-2">
+			<p:outputPanel styleClass="ui-g-3">
+				<p:outputLabel value="Tipo: " />
 				<p:selectOneMenu value="#{restauranteController.tipo}">
-					<f:selectItem itemLabel="Selecione o tipo" />
+					<f:selectItem itemLabel="Todos" />
 					<f:selectItems value="#{restauranteController.tipos}" />
 					<p:ajax event="change" update="dataGrid"
 						listener="#{restauranteController.filtrarLista}" />
 				</p:selectOneMenu>
 			</p:outputPanel>
-			<p:outputPanel styleClass="ui-g-6">
-				<p:commandButton value="Veja restaurantes que talvez você goste" styleClass="recommend-button"
+			<p:outputPanel styleClass="ui-g-5">
+				<p:commandButton value="Veja restaurantes que talvez você goste"
+					styleClass="recommend-button"
 					actionListener="#{restauranteController.recomendar}" update="@form">
 				</p:commandButton>
 			</p:outputPanel>
 			<p:dataGrid var="restaurante"
-				value="#{restauranteController.restaurantes}" columns="4"
-				layout="grid" rows="12" paginator="true" id="dataGrid"
-				paginatorPosition="bottom" 
-				scrollable="true" scrollHeight="500"
+				value="#{restauranteController.restaurantes}" columns="3"
+				layout="grid" rows="9" paginator="true" id="dataGrid"
+				paginatorPosition="bottom" scrollable="true" scrollHeight="500"
 				currentPageReportTemplate="{currentPage} de {totalPages}"
 				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
 				emptyMessage="Nenhum registro encontrado">
@@ -54,9 +56,7 @@
 							<f:param name="context" value="restaurant" />
 						</p:commandLink>
 					</h:panelGrid>
-
 				</p:panel>
-
 			</p:dataGrid>
 		</div>
 	</h:form>
