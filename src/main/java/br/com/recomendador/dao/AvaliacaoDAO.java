@@ -1,5 +1,6 @@
 package br.com.recomendador.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -74,12 +75,16 @@ public class AvaliacaoDAO implements IAvaliacaoDAO {
 
 	@Override
 	public List<Avaliacao> searchByCliente(Cliente cliente) {
-		CriteriaQuery<Avaliacao> criteriaQuery = getBuilder().createQuery(Avaliacao.class);
-		Root<Avaliacao> root = criteriaQuery.from(Avaliacao.class);
-		Predicate predicate = getBuilder().equal(root.get(Avaliacao_.cliente), cliente);
-		criteriaQuery.where(predicate);
-		TypedQuery<Avaliacao> typedQuery = entityManager.createQuery(criteriaQuery);
-		return typedQuery.getResultList();
+		try {
+			CriteriaQuery<Avaliacao> criteriaQuery = getBuilder().createQuery(Avaliacao.class);
+			Root<Avaliacao> root = criteriaQuery.from(Avaliacao.class);
+			Predicate predicate = getBuilder().equal(root.get(Avaliacao_.cliente), cliente);
+			criteriaQuery.where(predicate);
+			TypedQuery<Avaliacao> typedQuery = entityManager.createQuery(criteriaQuery);
+			return typedQuery.getResultList();
+		} catch (NoResultException e) {
+			return new ArrayList<>();
+		}
 	}
 
 }

@@ -9,6 +9,7 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.faces.event.ActionEvent;
+import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -347,6 +348,10 @@ public class RestauranteController extends AbstractController {
 
 	public void setTipo(String tipo) {
 		this.tipo = tipo;
+	}
+	
+	public void atualizaNota(AjaxBehaviorEvent ae) {
+		this.avaliacao.setNota(3);
 	}
 
 }

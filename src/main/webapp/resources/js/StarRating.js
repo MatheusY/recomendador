@@ -60,6 +60,7 @@ class StarRating extends HTMLElement {
             this.value = starIndex + 1;
 
             let rateEvent = new Event('rate');
+            document.getElementById("teste").value = "Johnny Bravo";
             this.dispatchEvent(rateEvent);
         });
     }

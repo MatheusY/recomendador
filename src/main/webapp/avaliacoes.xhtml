@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<title>Minhas Avaliações</title>
+	<h:outputStylesheet library="css" name="estilo.css" />
+	<link rel="stylesheet"
+		href="//code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" />
+</h:head>
+<h:body>
+	<h:form styleClass="background-color">
+		<ui:include src="submenu.xhtml" />
+		<div class="ui-g-10">
+
+			<p:dataGrid var="avaliacao" value="#{avaliacaoController.avaliacoes}"
+				columns="2" layout="grid" rows="8" paginator="true" id="dataGrid"
+				paginatorPosition="bottom" scrollable="true" scrollHeight="500"
+				currentPageReportTemplate="{currentPage} de {totalPages}"
+				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+				emptyMessage="Nenhum avaliação encontrada">
+
+				<p:panel header="#{avaliacao.restaurante.nome}"
+					style="text-align:center">
+					<h:panelGrid columns="3"
+						style="width:100%; background-color: none;">
+						<p:commandLink title="Detalhe" id="linkDetalhe"
+							action="#{restauranteController.detalhe}" update="@form">
+							<h:graphicImage url="#{avaliacao.restaurante.imagem}" width="150"
+								height="100" />
+							<f:setPropertyActionListener value="#{avaliacao.restaurante}"
+								target="#{restauranteController.restauranteSelecao}" />
+							<f:param name="context" value="restaurant" />
+						</p:commandLink>
+						<p:outputPanel>
+							<h:outputLabel value="Endereço: " />
+							<h:outputLabel value="#{avaliacao.restaurante.endereco}" />
+							<x-star-rating value="#{avaliacao.nota}" number="5"></x-star-rating>
+						</p:outputPanel>
+					</h:panelGrid>
+				</p:panel>
+			</p:dataGrid>
+		<h:outputScript name="js/StarRatingStatic.js" />
+		</div>
+	</h:form>
+</h:body>
+</html>

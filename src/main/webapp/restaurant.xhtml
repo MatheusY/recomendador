@@ -37,12 +37,14 @@
 				</p:column>
 				<p:column>
 					<p:outputPanel>
-						<!-- 												 <p:rating value="#{restauranteController.avaliacao.nota}" -->
-						<!-- 													cancel="false" styleClass="rating" />  -->
-						<x-star-rating value="#{restauranteController.avaliacao.nota}"
-							number="5"></x-star-rating>
+						<x-star-rating id="rating"
+							value="#{restauranteController.avaliacao.nota}" number="5">
+						 </x-star-rating>
 						<h:outputScript name="js/StarRating.js" />
-
+						<p:inputText id="teste" >
+							<f:ajax event="change"
+								listener="#{restauranteController.atualizaNota}"></f:ajax>
+						</p:inputText>
 					</p:outputPanel>
 				</p:column>
 				<p:column>
