@@ -7,6 +7,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import br.com.recomendador.entity.Restaurante;
 
@@ -25,6 +26,14 @@ public class BuscaAvaliacao {
 
 		driver.get("https://www.tripadvisor.com.br/Restaurants-g303631-Sao_Paulo_State_of_Sao_Paulo.html");
 
+//		List<WebElement> perfil = driver.findElements(By.xpath("//div[contains(@class, 'global-nav-profile')]/a"));
+//		
+//		perfil.get(1).click();
+//		
+//		WebElement botaoGoogle = driver.findElement(By.className("regGoogleContinue"));
+//		
+//		botaoGoogle.click();
+
 		List<WebElement> restaurantes = driver.findElements(By.xpath("//div[contains(@class, 'photo_booking')]/a"));
 
 		List<String> linksRestaurantes = new ArrayList<>();
@@ -41,31 +50,17 @@ public class BuscaAvaliacao {
 				driverRestaurante.get(link);
 
 				Restaurante restaurante = gerenciadorDaAvaliacao.obtemRestaurante(driverRestaurante);
-
-				gerenciadorDaAvaliacao.buscarAvaliacoesPorRestaurante(driverRestaurante, restaurante);
+				if (restaurante == null) {
+					driverRestaurante.close();
+					driverRestaurante.quit();
+				} else
+					gerenciadorDaAvaliacao.buscarAvaliacoesPorRestaurante(driverRestaurante, restaurante);
 			}
 			WebElement proxPag = driver.findElement(By.className("nav next rndBtn ui_button primary taLnk"));
 			proxPag.click();
 			String currentUrl = driver.getCurrentUrl();
 			driver.get(currentUrl);
 		}
-//		WebElement webElement = findElements.get(0);
-//		
-//		webElement.getText();
-//
-//		List<WebElement> imagem = webElement.findElements(By.xpath("//span[contains(@class, 'imgWrap')]/img"));
-//		List<WebElement> imagem = webElement.findElements(By.xpath("//div[contains(@class, 'listing rebrand')]/div/a/div/span/img"));		
-//		String linkImg = imagem.get(0).getAttribute("src");
-//		
-//		String titulo = webElement.findElement(By.xpath("//div[contains(@class, 'title')]/a")).getText();
-//		
-//		System.out.println(titulo + " | " + linkImg);
-//		driver.get(
-//				"https://www.tripadvisor.com.br/Restaurant_Review-g303631-d6351139-Reviews-Meime_Pizzaria-Sao_Paulo_State_of_Sao_Paulo.html");
-
-		gerenciadorDaAvaliacao.salvaClientes();
-
-		gerenciadorDaAvaliacao.salvaTipos();
 
 	}
 

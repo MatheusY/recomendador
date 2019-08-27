@@ -1,6 +1,8 @@
 package br.com.recomendador.main;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
@@ -9,6 +11,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -18,6 +21,8 @@ import br.com.recomendador.entity.Restaurante;
 
 public class GerenciadorDaAvaliacao {
 	private Set<String> clientes = new LinkedHashSet<>();
+	private Set<String> clientesNaoSalvo;
+	private Set<String> tiposNaoSalvo;
 	private Map<Restaurante, Map<Integer, Integer>> avaliacoes = new HashMap<Restaurante, Map<Integer, Integer>>();
 
 	private Set<String> tiposComidas = new LinkedHashSet<>();
@@ -38,13 +43,15 @@ public class GerenciadorDaAvaliacao {
 
 	public void salvaClientes() {
 		try {
+			int idCliente = clientes.size() - clientesNaoSalvo.size();
 			fileWriter = new FileWriter(clienteFile, true);
-			Iterator<String> iteratorClientes = clientes.iterator();
-			for (int cont = 0; cont < clientes.size(); cont++) {
-				fileWriter.append(String.valueOf(cont + 1));
+			Iterator<String> iteratorClientes = clientesNaoSalvo.iterator();
+			for (int cont = 0; cont < clientesNaoSalvo.size(); cont++) {
+				fileWriter.append(String.valueOf(idCliente + 1));
 				fileWriter.append(COMMA_DELIMITER);
 				fileWriter.append(iteratorClientes.next());
 				fileWriter.append(NEW_LINE_SEPARATOR);
+				idCliente++;
 			}
 //			for (String cliente : clientes) {
 //				fileWriter.append(cliente);
@@ -60,9 +67,13 @@ public class GerenciadorDaAvaliacao {
 
 	public void buscarAvaliacoesPorRestaurante(WebDriver driver, Restaurante restaurante) {
 
+		tiposNaoSalvo = new LinkedHashSet<>();
 		List<WebElement> tipos = driver.findElements(By.xpath("//div[contains(@class, 'header_links')]/a"));
 		if (!tipos.isEmpty() || tipos.size() > 1) {
 			tipos.remove(0);
+			tipos.forEach(tipo -> tiposNaoSalvo.add(tipo.getText()));
+			tiposNaoSalvo = tiposNaoSalvo.stream().filter(tipo -> !tiposComidas.contains(tipo))
+					.collect(Collectors.toSet());
 			tipos.forEach(tipo -> tiposComidas.add(tipo.getText()));
 			for (int i = 0; i < tipos.size(); i++) {
 				if (tiposComidas.contains(tipos.get(i).getText()))
@@ -70,10 +81,16 @@ public class GerenciadorDaAvaliacao {
 			}
 		}
 
+		salvaTipos();
+
+		clientesNaoSalvo = new LinkedHashSet<>();
+
 		boolean termino = true;
 		Map<Integer, Integer> avaliacao = new HashMap<>();
-		
-		while (termino) {
+
+		int i = 0;
+
+		while (i < 2) {
 			gravaAvaliacao(driver, avaliacao);
 
 			if (driver.findElements(By.xpath("//a[contains(@class, 'nav next ui_button primary disabled')]"))
@@ -81,19 +98,20 @@ public class GerenciadorDaAvaliacao {
 				avaliacoes.put(restaurante, avaliacao);
 				termino = false;
 			}
-			if (termino) {
+			if (i < 2) {
 				WebElement proximo = driver.findElement(By.className("next"));
 				proximo.click();
 				String currentUrl = driver.getCurrentUrl();
 				driver.get(currentUrl);
-//				driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
-//				System.out.println("Página: " + pagina);
 			}
+
+			i++;
 		}
 		driver.close();
 		driver.quit();
 
 		salvaAvaliacoes();
+		salvaClientes();
 	}
 
 	private void salvaRestaurantesTipos(int id_tipo) {
@@ -157,7 +175,10 @@ public class GerenciadorDaAvaliacao {
 			else
 				nota = 1;
 
+			int tamanhoClienteAntes = clientes.size();
 			clientes.add(nome[0]);
+			if (tamanhoClienteAntes != clientes.size())
+				clientesNaoSalvo.add(nome[0]);
 			Integer idCliente = buscaCliente(nome[0]);
 			boolean eRepetido = avaliacao.containsKey(idCliente);
 			if (!eRepetido)
@@ -192,12 +213,18 @@ public class GerenciadorDaAvaliacao {
 		restaurante.setNome(nomeRestaurante);
 		restaurante.setEndereco(enderecoRestaurante);
 		restaurante.setImagem(linkImagem);
-		salvaRestaurante(restaurante);
-		return restaurante;
+		boolean valido = salvaRestaurante(restaurante);
+		if(valido)
+			return restaurante;
+		else
+			return null;
 	}
 
-	private void salvaRestaurante(Restaurante restaurante) {
+	private boolean salvaRestaurante(Restaurante restaurante) {
 		try {
+			boolean verificaDuplicada = buscaRestaurante(restaurante);
+			if(verificaDuplicada)
+				return false;
 			fileWriter = new FileWriter(restauranteFile, true);
 			fileWriter.append(String.valueOf(idRestaurante));
 			fileWriter.append(COMMA_DELIMITER);
@@ -208,22 +235,51 @@ public class GerenciadorDaAvaliacao {
 			fileWriter.append(restaurante.getImagem());
 			fileWriter.append(NEW_LINE_SEPARATOR);
 			idRestaurante++;
+			return true;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		return false;
+	}
 
+	private boolean buscaRestaurante(Restaurante restaurante) {
+		BufferedReader br = null;
+		String linha = "";
+		try {
+
+			br = new BufferedReader(new FileReader("restaurante.csv"));
+			while ((linha = br.readLine()) != null) {
+
+				String[] rest = linha.split(COMMA_DELIMITER);
+
+				if (restaurante.getNome().equals(rest[1]))
+					return true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (br != null)
+					br.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return false;
 	}
 
 	public void salvaTipos() {
-		Iterator<String> iteratorTipo = tiposComidas.iterator();
-		int idTipo = 1;
+		int idTipo = tiposComidas.size() - tiposNaoSalvo.size();
+		Iterator<String> iteratorTipo = tiposNaoSalvo.iterator();
 		try {
 			fileWriter = new FileWriter(tipoFile, true);
 			while (iteratorTipo.hasNext()) {
-				fileWriter.append(String.valueOf(idTipo));
+				fileWriter.append(String.valueOf(idTipo + 1));
 				fileWriter.append(COMMA_DELIMITER);
 				fileWriter.append(iteratorTipo.next());
 				fileWriter.append(NEW_LINE_SEPARATOR);
+				idTipo++;
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
