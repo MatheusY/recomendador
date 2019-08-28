@@ -5,17 +5,21 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
 
 import br.com.recomendador.entity.Restaurante;
 
@@ -40,6 +44,66 @@ public class GerenciadorDaAvaliacao {
 	private static final String COMMA_DELIMITER = ",";
 
 	private static final String NEW_LINE_SEPARATOR = "\n";
+
+	public GerenciadorDaAvaliacao() {
+		carregaDados();
+	}
+
+	private void carregaDados() {
+		carregaCliente();
+		carregaTipos();
+
+	}
+
+	private void carregaTipos() {
+		BufferedReader br = null;
+		String linha = "";
+		try {
+
+			br = new BufferedReader(new FileReader("tipos.csv"));
+			while ((linha = br.readLine()) != null) {
+
+				String[] tipo = linha.split(COMMA_DELIMITER);
+
+				tiposComidas.add(tipo[1]);
+
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (br != null)
+					br.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private void carregaCliente() {
+		BufferedReader br = null;
+		String linha = "";
+		try {
+
+			br = new BufferedReader(new FileReader("cliente.csv"));
+			while ((linha = br.readLine()) != null) {
+
+				String[] cliente = linha.split(COMMA_DELIMITER);
+
+				clientes.add(cliente[1]);
+
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (br != null)
+					br.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 
 	public void salvaClientes() {
 		try {
@@ -75,37 +139,43 @@ public class GerenciadorDaAvaliacao {
 			tiposNaoSalvo = tiposNaoSalvo.stream().filter(tipo -> !tiposComidas.contains(tipo))
 					.collect(Collectors.toSet());
 			tipos.forEach(tipo -> tiposComidas.add(tipo.getText()));
+			salvaTipos();
 			for (int i = 0; i < tipos.size(); i++) {
 				if (tiposComidas.contains(tipos.get(i).getText()))
 					salvaRestaurantesTipos(i + 1);
 			}
 		}
-
-		salvaTipos();
-
 		clientesNaoSalvo = new LinkedHashSet<>();
 
 		boolean termino = true;
 		Map<Integer, Integer> avaliacao = new HashMap<>();
 
-		int i = 0;
-
-		while (i < 2) {
-			gravaAvaliacao(driver, avaliacao);
+		while (termino) {
+			driver = gravaAvaliacao(driver, avaliacao);
 
 			if (driver.findElements(By.xpath("//a[contains(@class, 'nav next ui_button primary disabled')]"))
 					.size() != 0) {
 				avaliacoes.put(restaurante, avaliacao);
 				termino = false;
 			}
-			if (i < 2) {
-				WebElement proximo = driver.findElement(By.className("next"));
+			if (termino) {
+				WebElement proximo;
+				try {
+					proximo = driver.findElement(By.className("next"));
+				} catch (NoSuchElementException e) {
+					String currentUrl = driver.getCurrentUrl();
+					driver.manage().timeouts().implicitlyWait(1, TimeUnit.HOURS);
+					driver.close();
+					driver.quit();
+					driver = new ChromeDriver();
+					driver.get(currentUrl);
+					proximo = driver.findElement(By.className("next"));
+				}
 				proximo.click();
 				String currentUrl = driver.getCurrentUrl();
 				driver.get(currentUrl);
 			}
 
-			i++;
 		}
 		driver.close();
 		driver.quit();
@@ -153,8 +223,19 @@ public class GerenciadorDaAvaliacao {
 		}
 	}
 
-	private void gravaAvaliacao(WebDriver driver, Map<Integer, Integer> avaliacao) {
-		List<WebElement> avaliacoes = driver.findElements(By.className("rev_wrap"));
+	private WebDriver gravaAvaliacao(WebDriver driver, Map<Integer, Integer> avaliacao) {
+		List<WebElement> avaliacoes = new ArrayList<>();
+		try {
+			avaliacoes = driver.findElements(By.className("rev_wrap"));
+		} catch (NoSuchElementException e) {
+			String currentUrl = driver.getCurrentUrl();
+			driver.manage().timeouts().implicitlyWait(1, TimeUnit.HOURS);
+			driver.close();
+			driver.quit();
+			driver = new ChromeDriver();
+			driver.get(currentUrl);
+			avaliacoes = driver.findElements(By.className("rev_wrap"));
+		}
 		for (WebElement elemento : avaliacoes) {
 			WebElement informacao = elemento.findElement(By.className("info_text"));
 //			String titulo = elemento.findElement(By.className("noQuotes")).getText();
@@ -184,6 +265,7 @@ public class GerenciadorDaAvaliacao {
 			if (!eRepetido)
 				avaliacao.put(idCliente, nota);
 		}
+		return driver;
 
 	}
 
@@ -214,7 +296,7 @@ public class GerenciadorDaAvaliacao {
 		restaurante.setEndereco(enderecoRestaurante);
 		restaurante.setImagem(linkImagem);
 		boolean valido = salvaRestaurante(restaurante);
-		if(valido)
+		if (valido)
 			return restaurante;
 		else
 			return null;
@@ -223,7 +305,7 @@ public class GerenciadorDaAvaliacao {
 	private boolean salvaRestaurante(Restaurante restaurante) {
 		try {
 			boolean verificaDuplicada = buscaRestaurante(restaurante);
-			if(verificaDuplicada)
+			if (verificaDuplicada)
 				return false;
 			fileWriter = new FileWriter(restauranteFile, true);
 			fileWriter.append(String.valueOf(idRestaurante));
@@ -235,6 +317,8 @@ public class GerenciadorDaAvaliacao {
 			fileWriter.append(restaurante.getImagem());
 			fileWriter.append(NEW_LINE_SEPARATOR);
 			idRestaurante++;
+			fileWriter.flush();
+			fileWriter.close();
 			return true;
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -247,7 +331,7 @@ public class GerenciadorDaAvaliacao {
 		String linha = "";
 		try {
 
-			br = new BufferedReader(new FileReader("restaurante.csv"));
+			br = new BufferedReader(new FileReader("restaurantes.csv"));
 			while ((linha = br.readLine()) != null) {
 
 				String[] rest = linha.split(COMMA_DELIMITER);
@@ -281,6 +365,8 @@ public class GerenciadorDaAvaliacao {
 				fileWriter.append(NEW_LINE_SEPARATOR);
 				idTipo++;
 			}
+			fileWriter.flush();
+			fileWriter.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
