@@ -37,7 +37,7 @@ public class GerenciadorDaAvaliacao {
 	private File tipoFile = new File("tipos.csv");
 	private File restauranteTipoFile = new File("restauranteTipoFile.csv");
 
-	private int idRestaurante = 1;
+	private int idRestaurante = 102;
 
 	private FileWriter fileWriter;
 
@@ -52,6 +52,31 @@ public class GerenciadorDaAvaliacao {
 	private void carregaDados() {
 		carregaCliente();
 		carregaTipos();
+		carregaIdRestaurante();
+
+	}
+
+	private void carregaIdRestaurante() {
+		BufferedReader br = null;
+		String linha = "";
+		int cont = 1;
+		try {
+
+			br = new BufferedReader(new FileReader("restaurantes.csv"));
+			while ((linha = br.readLine()) != null) {
+				cont++;
+			}
+			idRestaurante = cont;
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (br != null)
+					br.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 
 	}
 
@@ -117,10 +142,10 @@ public class GerenciadorDaAvaliacao {
 				fileWriter.append(NEW_LINE_SEPARATOR);
 				idCliente++;
 			}
-//			for (String cliente : clientes) {
-//				fileWriter.append(cliente);
-//				fileWriter.append(NEW_LINE_SEPARATOR);
-//			}
+			// for (String cliente : clientes) {
+			// fileWriter.append(cliente);
+			// fileWriter.append(NEW_LINE_SEPARATOR);
+			// }
 			fileWriter.flush();
 			fileWriter.close();
 		} catch (IOException e) {
@@ -149,7 +174,7 @@ public class GerenciadorDaAvaliacao {
 
 		boolean termino = true;
 		Map<Integer, Integer> avaliacao = new HashMap<>();
-
+		int cont = 0;
 		while (termino) {
 			driver = gravaAvaliacao(driver, avaliacao);
 
@@ -175,7 +200,6 @@ public class GerenciadorDaAvaliacao {
 				String currentUrl = driver.getCurrentUrl();
 				driver.get(currentUrl);
 			}
-
 		}
 		driver.close();
 		driver.quit();
@@ -187,10 +211,12 @@ public class GerenciadorDaAvaliacao {
 	private void salvaRestaurantesTipos(int id_tipo) {
 		try {
 			fileWriter = new FileWriter(restauranteTipoFile, true);
-			fileWriter.append(String.valueOf(idRestaurante));
+			fileWriter.append(String.valueOf(idRestaurante - 1));
 			fileWriter.append(COMMA_DELIMITER);
 			fileWriter.append(String.valueOf(id_tipo));
 			fileWriter.append(NEW_LINE_SEPARATOR);
+			fileWriter.flush();
+			fileWriter.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -211,7 +237,8 @@ public class GerenciadorDaAvaliacao {
 					fileWriter.append(COMMA_DELIMITER);
 					fileWriter.append(String.valueOf(valorAvaliacao.getValue()));
 					fileWriter.append(NEW_LINE_SEPARATOR);
-//					System.out.println("Nome: " + valorAvaliacao.getKey() + " | " + valorAvaliacao.getValue());
+					// System.out.println("Nome: " + valorAvaliacao.getKey() + " | " +
+					// valorAvaliacao.getValue());
 					total++;
 				}
 				System.out.print("Total: " + total);
@@ -238,7 +265,7 @@ public class GerenciadorDaAvaliacao {
 		}
 		for (WebElement elemento : avaliacoes) {
 			WebElement informacao = elemento.findElement(By.className("info_text"));
-//			String titulo = elemento.findElement(By.className("noQuotes")).getText();
+			// String titulo = elemento.findElement(By.className("noQuotes")).getText();
 			String[] nome = informacao.getText().split("\n");
 			boolean nota5 = elemento.findElements(By.className("bubble_50")).size() != 0;
 			boolean nota4 = elemento.findElements(By.className("bubble_40")).size() != 0;
