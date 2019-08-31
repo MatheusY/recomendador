@@ -23,7 +23,7 @@ public class BuscaAvaliacao {
 		// System.setProperty("webdriver.gecko.driver",
 		// "/home/matheus/.mozilla/firefox/geckodriver");
 
-		System.setProperty("webdriver.chrome.driver", projectPath + "/drivers/chromedriver/chromedriver.exe");
+		System.setProperty("webdriver.chrome.driver", projectPath + "/drivers/chromedriver/chromedriver");
 
 		WebDriver driver = new ChromeDriver();
 
