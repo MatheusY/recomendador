@@ -39,7 +39,7 @@ public class AvaliacaoBusiness implements IAvaliacaoBusiness {
 				avaliacao.getCliente());
 		if (avaliacaoBanco.getNota() != avaliacao.getNota()) {
 			avaliacaoDAO.update(avaliacao);
-			List<Avaliacao> avaliacoes = buscarTodos();
+			List<Avaliacao> avaliacoes = buscarRecomendacao();
 			geraRecomendacao.geraAvaliacaoCSV(avaliacoes);
 		}
 		return avaliacao;
@@ -53,6 +53,11 @@ public class AvaliacaoBusiness implements IAvaliacaoBusiness {
 	@Override
 	public List<Avaliacao> buscarPorCliente(Cliente cliente) {
 		return avaliacaoDAO.searchByCliente(cliente);
+	}
+
+	@Override
+	public List<Avaliacao> buscarRecomendacao() {
+		return avaliacaoDAO.searchRecomendation();
 	}
 
 }

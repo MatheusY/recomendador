@@ -3,6 +3,7 @@ package br.com.recomendador.dao;
 import java.util.List;
 
 import br.com.recomendador.entity.Restaurante;
+import br.com.recomendador.entity.Tipo;
 
 public interface IRestauranteDAO {
 
@@ -12,6 +13,6 @@ public interface IRestauranteDAO {
 
 	public List<Restaurante> findByNameOrType(String filtroNome, String filtroTipo);
 
-	public List<String> findTipo();
+	public List<Restaurante> findByName(String filtroNome);
 
 }

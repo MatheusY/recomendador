@@ -15,7 +15,7 @@ public class Restaurante_ {
 	
 	public static volatile SingularAttribute<Restaurante, String> imagem;
 	
-	public static volatile SingularAttribute<Restaurante, String> tipo;
+	public static volatile ListAttribute<Restaurante, RestauranteTipo> restauranteTipos;
 	
 	public static volatile ListAttribute<Restaurante, Avaliacao> avaliacoes;
 }

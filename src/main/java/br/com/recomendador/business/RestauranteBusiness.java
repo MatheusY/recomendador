@@ -3,13 +3,13 @@ package br.com.recomendador.business;
 import java.util.List;
 
 import javax.ejb.Stateless;
-import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 
 import org.primefaces.context.RequestContext;
 
 import br.com.recomendador.dao.IRestauranteDAO;
 import br.com.recomendador.entity.Restaurante;
+import br.com.recomendador.entity.Tipo;
 
 @Stateless
 public class RestauranteBusiness implements IRestauranteBusiness {
@@ -35,14 +35,19 @@ public class RestauranteBusiness implements IRestauranteBusiness {
 
 	@Override
 	public List<Restaurante> buscarPorNomeOuTipo(String filtroNome, String filtroTipo) {
-		if(filtroNome != null)
+		if(filtroNome != null) {
 			filtroNome = filtroNome.toLowerCase();
+			if(filtroTipo == null)
+				return buscaPorNome(filtroNome);
+		}
+		else if(filtroTipo == null)
+			return buscarTodos();
 		return restauranteDAO.findByNameOrType(filtroNome, filtroTipo);
 	}
 
-	@Override
-	public List<String> buscarTipo() {
-		return restauranteDAO.findTipo();
-	}
 
+	private List<Restaurante>buscaPorNome(String filtroNome) {
+		return restauranteDAO.findByName(filtroNome);
+	}
+	
 }

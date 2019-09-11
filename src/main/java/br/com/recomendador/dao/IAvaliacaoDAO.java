@@ -18,4 +18,6 @@ public interface IAvaliacaoDAO {
 
 	public List<Avaliacao> searchByCliente(Cliente cliente);
 
+	public List<Avaliacao> searchRecomendation();
+
 }

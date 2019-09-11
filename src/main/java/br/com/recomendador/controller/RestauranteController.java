@@ -19,9 +19,11 @@ import org.primefaces.context.RequestContext;
 import br.com.recomendador.business.IAvaliacaoBusiness;
 import br.com.recomendador.business.IClienteBusiness;
 import br.com.recomendador.business.IRestauranteBusiness;
+import br.com.recomendador.business.ITipoBusiness;
 import br.com.recomendador.entity.Avaliacao;
 import br.com.recomendador.entity.Cliente;
 import br.com.recomendador.entity.Restaurante;
+import br.com.recomendador.entity.Tipo;
 import br.com.recomendador.exception.SystemException;
 import br.com.recomendador.main.GerarRecomendacao;
 
@@ -46,6 +48,9 @@ public class RestauranteController extends AbstractController {
 
 	@Inject
 	private IAvaliacaoBusiness avaliacaoBusiness;
+	
+	@Inject
+	private ITipoBusiness tipoBusiness;
 
 	private static final String RESTAURANTE_KEY = "restauranteSelecao";
 
@@ -75,7 +80,7 @@ public class RestauranteController extends AbstractController {
 
 	private String tipo;
 
-	private List<String> tipos;
+	private List<Tipo> tipos;
 
 	private File file = new File("log.csv");
 
@@ -275,7 +280,7 @@ public class RestauranteController extends AbstractController {
 	}
 
 	public void filtrarLista() {
-		this.setRestaurantes(restauranteBusiness.buscarPorNomeOuTipo(this.getFiltroNome(), this.getTipo()));
+		this.setRestaurantes(restauranteBusiness.buscarPorNomeOuTipo(this.getFiltroNome(), getTipo()));
 	}
 
 	public List<Restaurante> getRestaurantes() {
@@ -334,12 +339,8 @@ public class RestauranteController extends AbstractController {
 		this.filtroNome = filtroNome;
 	}
 
-	public List<String> getTipos() {
-		return restauranteBusiness.buscarTipo();
-	}
-
-	public void setTipos(List<String> tipos) {
-		this.tipos = tipos;
+	public List<Tipo> getTipos() {
+		return tipoBusiness.listarTipos();
 	}
 
 	public String getTipo() {

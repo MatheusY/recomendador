@@ -52,7 +52,7 @@ public class GerenciadorDaAvaliacao {
 	private void carregaDados() {
 		carregaCliente();
 		carregaTipos();
-		carregaIdRestaurante();
+//		carregaIdRestaurante();
 
 	}
 
@@ -174,6 +174,12 @@ public class GerenciadorDaAvaliacao {
 
 		boolean termino = true;
 		Map<Integer, Integer> avaliacao = new HashMap<>();
+//		List<WebElement> findElements = driver.findElements(By.className("last"));
+//		WebElement ultimaPagina = findElements.get(2);
+//		ultimaPagina.click();
+//		String ultimaUrl = driver.getCurrentUrl();
+//		driver.get(ultimaUrl);
+		
 		int cont = 0;
 		while (termino) {
 			driver = gravaAvaliacao(driver, avaliacao);

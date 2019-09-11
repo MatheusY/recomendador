@@ -42,7 +42,7 @@ public class ClienteController extends AbstractController {
 	public void init() {
 		try {
 			geraRecomendacao = new GerarRecomendacao();
-			List<Avaliacao> avaliacoes = avaliacaoBusiness.buscarTodos();
+			List<Avaliacao> avaliacoes = avaliacaoBusiness.buscarRecomendacao();
 			geraRecomendacao.geraAvaliacaoCSV(avaliacoes);
 		} catch (SystemException e) {
 			System.out.println(e.getMessage());
@@ -52,7 +52,7 @@ public class ClienteController extends AbstractController {
 
 	public void salvarCliente() {
 		if ("teste".equals(clienteSelecao.getNome()))
-			this.setClienteSelecao(clienteBusiness.buscar(1271));
+			this.setClienteSelecao(clienteBusiness.buscar(2));
 		else if("teste2".equals(clienteSelecao.getNome()))
 			this.setClienteSelecao(clienteBusiness.buscar(1270));
 		else if("teste3".equals(clienteSelecao.getNome()))

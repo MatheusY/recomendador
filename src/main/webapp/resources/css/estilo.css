@@ -126,23 +126,3 @@
 	margin-left: 10px;
 	margin-top: 10px;
 }
-
-x-star-rating {
-    font-family: 'Ionicons';
-    font-size: 48px;
-    display: inline-flex;
-    cursor: pointer;
-}
-
-x-star-rating > .star::after {
-    content: '\f2fc';
-    color: #777;
-    transition: .5s;
-}
-
-x-star-rating > .star.full::after {
-    content: '\f2fc';
-    color: #fd0;
-    transition: .5s;
-    text-shadow: 0 2px 5px rgba(0,0,0,.5);
-}

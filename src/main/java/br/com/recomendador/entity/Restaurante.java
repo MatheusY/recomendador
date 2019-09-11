@@ -15,7 +15,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="TB_RESTAURANTE")
+@Table(name = "TB_RESTAURANTE")
 public class Restaurante implements Serializable {
 	/**
 	 * 
@@ -23,27 +23,26 @@ public class Restaurante implements Serializable {
 	private static final long serialVersionUID = -4863953864167272898L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="restaurante_sequence")
-	@SequenceGenerator(name="restaurante_sequence", sequenceName="res_seq")
-	@Column(name="ID_RESTAURANTE")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "restaurante_sequence")
+	@SequenceGenerator(name = "restaurante_sequence", sequenceName = "res_seq")
+	@Column(name = "ID_RESTAURANTE")
 	private Long id;
-	
-	@Column(name="NOME", unique=true)
+
+	@Column(name = "NOME", unique = true)
 	private String nome;
-	
-	@Column(name="ENDERECO")
+
+	@Column(name = "ENDERECO")
 	private String endereco;
-	
-	@Column(name="imagem")
+
+	@Column(name = "imagem")
 	private String imagem;
-	
-	@Column(name="TIPO")
-	private String tipo;
-	
-	@OneToMany(mappedBy="restaurante", targetEntity = Avaliacao.class, cascade = CascadeType.ALL)
+
+	@OneToMany(mappedBy = "restaurante", targetEntity = Avaliacao.class, cascade = CascadeType.ALL)
 	List<Avaliacao> avaliacoes = new ArrayList<>();
-	
-	
+
+	@OneToMany(mappedBy = "restaurante", targetEntity = RestauranteTipo.class, cascade = CascadeType.ALL)
+	List<RestauranteTipo> restauranteTipos = new ArrayList<>();
+
 	public Long getId() {
 		return id;
 	}
@@ -84,11 +83,4 @@ public class Restaurante implements Serializable {
 		this.avaliacoes = avaliacoes;
 	}
 
-	public String getTipo() {
-		return tipo;
-	}
-
-	public void setTipo(String tipo) {
-		this.tipo = tipo;
-	}
 }

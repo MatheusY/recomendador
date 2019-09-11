@@ -21,17 +21,20 @@
 						listener="#{restauranteController.filtrarLista}" />
 				</p:inputText>
 			</p:outputPanel>
-			<p:outputPanel styleClass="ui-g-3">
+			
+<!-- 			Alterar para objeto e não String -->
+			<p:outputPanel styleClass="ui-g-4">
 				<p:outputLabel value="Tipo: " />
 				<p:selectOneMenu value="#{restauranteController.tipo}">
-					<f:selectItem itemLabel="Todos" />
-					<f:selectItems value="#{restauranteController.tipos}" />
+					<f:selectItem itemLabel="Todos" itemValue="#{null}"></f:selectItem>
+					<f:selectItems value="#{restauranteController.tipos}" var="tipos"
+						itemLabel="#{tipos.nome}" itemValue="#{tipos.nome} "/>
 					<p:ajax event="change" update="dataGrid"
 						listener="#{restauranteController.filtrarLista}" />
 				</p:selectOneMenu>
 			</p:outputPanel>
-			<p:outputPanel styleClass="ui-g-5">
-				<p:commandButton value="Veja restaurantes que talvez você goste"
+			<p:outputPanel styleClass="ui-g-4">
+				<p:commandButton value="Olhe esses restaurantes!"
 					styleClass="recommend-button"
 					actionListener="#{restauranteController.recomendar}" update="@form">
 				</p:commandButton>
